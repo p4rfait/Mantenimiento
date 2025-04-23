@@ -1,74 +1,78 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package mantenimiento.servlet;
 
 import java.io.IOException;
 import java.sql.*;
 
-@jakarta.servlet.annotation.WebServlet(name = "RegistrarPersona", urlPatterns
-        = {"/RegistrarPersona"})
+@jakarta.servlet.annotation.WebServlet(name = "RegistrarSolicitud", urlPatterns = {"/RegistrarSolicitud"})
 public class RegistrarSolicitud extends jakarta.servlet.http.HttpServlet {
 
     protected void ProcessRequest(jakarta.servlet.http.HttpServletRequest request,
             jakarta.servlet.http.HttpServletResponse response)
             throws jakarta.servlet.ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+
         try (java.io.PrintWriter out = response.getWriter()) {
             try {
-                String nombre = request.getParameter("nombre");
-                int edad = Integer.parseInt(request.getParameter("edad"));
-                String sexo = request.getParameter("sexo");
-                String fecha = request.getParameter("fecha");
-                int idocupacion = Integer.parseInt(request.getParameter("ocupacion"));
-                String ocupacion = "";
-                String usuario = request.getParameter("usuario");
-                String password = request.getParameter("password");
-                String query = "INSERT INTO persona(nombre_persona, edad_persona, sexo_persona, id_ocupacion, fecha_nac, usuario, contrasenia) " +"VALUES ('"+ nombre + "'," + edad + ", '" + sexo + "' , " + idocupacion + ", '" + fecha +"' ,'" +usuario+ "'  , '"+password+"'  )";
+                String clientName = request.getParameter("client_name");
+                int apartmentNumber = Integer.parseInt(request.getParameter("apartment_number"));
+                String problemType = request.getParameter("problem_type");
+                String problemDescription = request.getParameter("problem_description");
+
+                // Crear la consulta SQL de inserción
+                String query = "INSERT INTO solicitudes (client_name, apartment_number, problem_type, problem_description) "
+                             + "VALUES (?, ?, ?, ?)";
 
                 Conexion con = new Conexion();
-                con.setQuery(query);
-                String query2 =
-                "SELECT ocupacion FROM ocupaciones WHERE id_ocupacion="+idocupacion;
-con.setRs(query2);
-                ResultSet rs = con.getRs();
-                rs.next();
-                ocupacion = rs.getString(1);
-                con.cerrarConexion();
+                PreparedStatement stmt = con.getConexion().prepareStatement(query);
+                stmt.setString(1, clientName);
+                stmt.setInt(2, apartmentNumber);
+                stmt.setString(3, problemType);
+                stmt.setString(4, problemDescription);
+                stmt.executeUpdate();
+
+                // Respuesta HTML
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Registro" + usuario + "</title>");
+                out.println("<title>Solicitud Registrada</title>");
                 out.println("<link rel='stylesheet' href='css/bootstrap.min.css'>");
-                out.println("<link rel='stylesheet' href='css/estilo.css' >");
+                out.println("<link rel='stylesheet' href='css/estilo.css'>");
                 out.println("</head>");
                 out.println("<body>");
-                out.println("<h1 class='text-center'>Usted ha registrado un usuario exitosamente</h1 >");
-                out.println("<section class='container text-center'>");
-                out.println("<h3>Nombre: </h3>" + nombre);
-                out.println("<h3>Edad: </h3>" + edad);
-                out.println("<h3>Sexo: </h3>" + sexo);
-                out.println("<h3>Ocupaci&oacute;n: </h3>" + ocupacion);
-                out.println("<h3>Fecha de nacimiento: </h3>" + fecha);
-                out.println("<br><a class='btn btn-light' href='login.html'>Volver</a>");
-                out.println("</section>");
+                out.println("<div class='container text-center mt-5'>");
+                out.println("<h1>¡Solicitud registrada exitosamente!</h1>");
+                out.println("<p><strong>Nombre del cliente:</strong> " + clientName + "</p>");
+                out.println("<p><strong>Número de apartamento:</strong> " + apartmentNumber + "</p>");
+                out.println("<p><strong>Tipo de problema:</strong> " + problemType + "</p>");
+                out.println("<p><strong>Descripción:</strong> " + problemDescription + "</p>");
+                out.println("<a class='btn btn-primary' href='index.html'>Registrar otra solicitud</a>");
+                out.println("<a class='btn btn-secondary' href='MostrarSolicitudes'>Ver Solicitudes</a>");
+                out.println("</div>");
+                out.println("<footer class='text-center mt-5 py-3 bg-light border-top'>");
+                out.println("<small>&copy; 2025 Sistema de Mantenimiento - Desarrollado por Tomás Armando Campos Lopez (CL231461) y Omarvis Innaun Mendoza Portillo (MP192089)</small>");
+                out.println("</footer>");
                 out.println("</body>");
                 out.println("</html>");
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
 
+                con.cerrarConexion();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
+    @Override
     protected void doPost(jakarta.servlet.http.HttpServletRequest request,
-            jakarta.servlet.http.HttpServletResponse response) throws jakarta.servlet.ServletException,
-            IOException {
+            jakarta.servlet.http.HttpServletResponse response)
+            throws jakarta.servlet.ServletException, IOException {
         ProcessRequest(request, response);
     }
 
+    @Override
     protected void doGet(jakarta.servlet.http.HttpServletRequest request,
-            jakarta.servlet.http.HttpServletResponse response) throws jakarta.servlet.ServletException,
-            IOException {
+            jakarta.servlet.http.HttpServletResponse response)
+            throws jakarta.servlet.ServletException, IOException {
         ProcessRequest(request, response);
     }
 }

@@ -1,67 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>Mantenimiento</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Mantenimiento</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
 
-    <body class="container" >
+    <!-- Contenido principal -->
+    <main class="flex-fill container py-5">
 
-        <div id="login">
-            <h1 class="text-center text-white pt-5">Mantenimiento</h1>
-            <div class="container">
-                <div id="login-row" class="row justify-content-center align-items-center">
-                    <div id="login-column" class="col-md-6">
-                        <div id="login-box" class="col-md-12">
+        <h1 class="text-center mb-4">Registrar solicitud de mantenimiento</h1>
 
-                            <div class="modal-body">
-                                <form id="save-form" class="form" action="RegistrarPersona"
-                                      method="post">
-                                    <h3 class="text-center text-info">Registrar solicitud de mantenimiento</h3>
-                                    <div class="form-group">
-                                        <label for="nombre" class="text-info">Nomnbre de residente:</label><br>
-
-                                        <input type="text" name="nombre" id="nombre" class="form-
-                                               control">
-
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="edad" class="text-info">Numero de departamento:</label><br>
-                                        <input type="number" name="edad" id="edad" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ocupacion" class="text-info">Tipo de problema:
-                                            </label><br>
-                                        <select class="form-control" name="ocupacion" id="ocupacion">
-                                            <option value="1">Eléctrico</option>
-                                            <option value="2">Plomería</option>
-                                            <option value="3">otro</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password" class="text-info">Descripcion de problema:</label><br>
-                                        <input type="password" name="password" id="password"
-                                               class="form-control">
-                                    </div>
-                                    <div class="form-group">
-
-                                    </div>
-                                    <br>
-
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-
-                                <input type="submit" name="submit" class="btn btn-info btn-md"
-                                       form="save-form" value="Enviar">
-                            </div>
-                        
-                        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="save-form" action="RegistrarSolicitud" method="post" class="border p-4 rounded shadow-sm bg-light">
+                    <div class="form-group mb-3">
+                        <label for="client_name">Nombre de residente:</label>
+                        <input type="text" name="client_name" id="client_name" class="form-control" required>
                     </div>
-                </div>
+                    <div class="form-group mb-3">
+                        <label for="apartment_number">Número de departamento:</label>
+                        <input type="number" name="apartment_number" id="apartment_number" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="problem_type">Tipo de problema:</label>
+                        <select class="form-control" name="problem_type" id="problem_type" required>
+                            <option value="Eléctrico">Eléctrico</option>
+                            <option value="Plomería">Plomería</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="problem_description">Descripción del problema:</label>
+                        <textarea name="problem_description" id="problem_description" class="form-control" rows="4" required></textarea>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <input type="submit" class="btn btn-primary me-2" value="Enviar Solicitud">
+                        <a href="MostrarSolicitudes" class="btn btn-secondary">Ver Solicitudes</a>
+                    </div>
+                </form>
             </div>
         </div>
 
-    </body>
+    </main>
 
+    <footer class="text-center py-3 bg-light border-top">
+        <small>&copy; 2025 Sistema de Mantenimiento - Desarrollado por Tomás Armando Campos Lopez (CL231461) y Omarvis Innaun Mendoza Portillo (MP192089)</small>
+    </footer>
+
+</body>
 </html>

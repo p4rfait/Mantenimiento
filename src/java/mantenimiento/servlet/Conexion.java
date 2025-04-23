@@ -5,48 +5,54 @@ import java.sql.*;
 public class Conexion {
 
     private Connection conexion = null;
-    private Statement s = null;
-    private ResultSet rs = null;
-    private PreparedStatement st = null;
-    private String query = "";
-//Contructor
 
     public Conexion() throws SQLException {
         try {
-//obtenemos el driver de para mysql
+            // Cargar el driver de MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
-// Se obtiene una conexión con la base de datos. 2
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost/tienda", "root", "");
-// Permite ejecutar sentencias SQL sin parámetros
-            s = conexion.createStatement();
-        } catch (ClassNotFoundException e1) {
-//Error si no puedo leer el driver de MySQL
-            System.out.println("ERROR:No encuentro el driver de la BD: " + e1.getMessage());
+
+            // Conectar a la base de datos "Mantenimiento"
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost/Mantenimiento", "root", "");
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("ERROR: No se encontró el driver de la BD: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("ERROR: Fallo en la conexión con la BD: " + e.getMessage());
+            throw e;
         }
     }
-//Metodo que permite obtener los valores del resulset
 
-    public ResultSet getRs() {
-        return rs;
+    // Obtener la conexión (útil para crear PreparedStatement desde el servlet)
+    public Connection getConexion() {
+        return conexion;
     }
-//Metodo que permite fijar la tabla resultado de la pregunta
-//SQL realizada
 
-    public void setRs(String consulta) {
+    // Ejecutar una consulta SELECT y obtener ResultSet
+    public ResultSet ejecutarConsulta(String consulta) {
         try {
-            this.rs = s.executeQuery(consulta);
-        } catch (SQLException e2) {
-            System.out.println("ERROR:Fallo en SQL: " + e2.getMessage());
+            Statement stmt = conexion.createStatement();
+            return stmt.executeQuery(consulta);
+        } catch (SQLException e) {
+            System.out.println("ERROR al ejecutar consulta: " + e.getMessage());
+            return null;
         }
     }
 
-//Metodo que recibe un sql como parametro que sea un update,insert.delete
-    public void setQuery(String query) throws SQLException {
-        this.s.executeUpdate(query);
+    // Ejecutar una actualización (INSERT, UPDATE, DELETE)
+    public int ejecutarActualizacion(String consulta) throws SQLException {
+        try (Statement stmt = conexion.createStatement()) {
+            return stmt.executeUpdate(consulta);
+        }
     }
-//Metodo que cierra la conexion
 
-    public void cerrarConexion() throws SQLException {
-        conexion.close();
+    // Cerrar la conexión
+    public void cerrarConexion() {
+        try {
+            if (conexion != null && !conexion.isClosed()) {
+                conexion.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR al cerrar la conexión: " + e.getMessage());
+        }
     }
 }
